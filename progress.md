@@ -78,7 +78,7 @@ Interview questions to answer afterwards:
 
 ## Project setup for the license app (in this project)
 
-- [ ] `git init` and a first commit, so the router work starts from a clean state
+- [x] `git init` and a first commit, pushed to GitHub (`Anna-Bohun-art/Vue_project`)
 - [ ] Move the practice components (`Counter.vue`, `Todo.vue`) to `src/exercises/`
 - [ ] Remove the practice code from `App.vue` (greeting input, `toggleBox`, `greet`, unused CSS) so it only holds the layout, `<nav>` and `<RouterView />`
 - [ ] Replace the demo views (`HomeView.vue`, `AboutView.vue`) with the license app views

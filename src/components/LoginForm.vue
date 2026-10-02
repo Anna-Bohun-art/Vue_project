@@ -16,7 +16,7 @@ function resolveLogin(){
 </script>
 
 <template>
-    <form class="counter" @submit.prevent="resolveLogin">
+    <form class="login" @submit.prevent="resolveLogin">
         <input type="email" v-model="email" placeholder="Your email">
         <input type="password" v-model="password" placeholder="Your password">
         <select v-model="role">
@@ -31,7 +31,11 @@ function resolveLogin(){
     display: flex;
     flex-direction: column;
 }
-
+.login {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
 @media (min-width: 1024px) {
   .greetings h1,
   .greetings h3 {
