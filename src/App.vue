@@ -21,6 +21,7 @@ header {
 
 nav {
   display: flex;
+  margin-top: 50vh;
   width: 100%;
   font-size: 12px;
 }
@@ -47,7 +48,7 @@ nav a:first-of-type {
   nav {
     font-size: 1rem;
     padding: 1rem 0;
-    margin-top: 1rem;
+    margin-top: 50vh;
   }
 }
 </style>
