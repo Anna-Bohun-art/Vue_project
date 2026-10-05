@@ -1,12 +1,13 @@
 # Progress: Vue preparation for develop4edu
 
-As of 2 October 2026. Probetag: 27 October.
+As of 5 October 2026. Probetag: 27 October.
 
 ## Status
 
 - **Week 1:** done except the Vue docs (Essentials), planned for 2 October. TypeScript is not needed, because develop4edu uses JavaScript.
 - **Week 2 (28 Sept – 2 Oct):** finished on 2 October with `watch`, git + GitHub, and Vue Router (`/licenses`, `/login`, `/licenses/:id`). Navigation guard, Pinia, form validation, list states and repo cleanup move to Week 3. That is fine: 3½ weeks left until 27 October.
 - **Decision (2 October):** continue in this project, no new project. Vue Router and Pinia are already installed and registered in `src/main.js`.
+- **Week 3 (5-11 Oct):** started on 5 October with Router step 3 (`RouterLink` to the detail page) and the `License.vue` cleanup. Next: Pinia store for licenses.
 - **Tests (Vitest, Playwright):** postponed on purpose. Do them in Week 4 or 5, before 27 October.
 
 ## Done
@@ -61,16 +62,16 @@ Interview questions to answer afterwards:
 
 `License.vue`:
 
-- [ ] Optional: write name, date and buttons once and use `v-if` / `v-else-if` / `v-else` only for the status label
-- [ ] `color: yellow` to `orange` (readability)
-- [ ] Remove the unused `.greetings` CSS
-- [ ] `const prop` is never used: rename it to `props` (needed for the next item) or remove it
-- [ ] Optional: `const status = computed(() => getStatus(props.license))` instead of calling `getStatus(license)` three times in the template (good practice for the interview question)
+- [x] Optional: write name, date and buttons once and use `v-if` / `v-else-if` / `v-else` only for the status label
+- [x] `color: yellow` to `orange` (readability)
+- [x] Remove the unused `.greetings` CSS
+- [x] `const prop` is never used: rename it to `props` (needed for the next item) or remove it
+- [x] Optional: `const status = computed(() => getStatus(props.license))` instead of calling `getStatus(license)` three times in the template (good practice for the interview question)
 
 ## Next session
 
 1. [ ] Read the Vue docs, Essentials, if not done yet (Reactivity Fundamentals, Computed Properties, Watchers, Props, Component Events), and bring questions
-2. [ ] Router step 3: "Details" `RouterLink` in `License.vue` (see Week 2 tasks)
+2. [x] Router step 3: "Details" `RouterLink` in `License.vue` (see Week 2 tasks)
 3. [ ] Start Week 3 with the **Pinia store for licenses**: one place for the mock list, used by `LicenseStatus.vue` and `LicenseDetailView.vue` (removes the copied list)
 4. Later: optional tasks 5 (counter) and 7 (two empty messages)
 
@@ -83,6 +84,20 @@ Interview questions to answer afterwards:
 - **Router:** `routes` maps paths to components, `<RouterLink :to="{ name }">` navigates, `<RouterView />` is replaced by the current page. The `<nav>` stays outside `RouterView` so it is visible on every page. `:id` in a path is a placeholder, read it with `useRoute().params.id` (a string).
 - **`find` vs `filter`:** `find` returns one element or `undefined`, `filter` always an array.
 - **Typical mistakes today:** `<script type="setup">` instead of `<script setup>`; `to="{...}"` without `:` (passes a string); missing `import { computed }`; `50 vh` with a space (invalid CSS, silently ignored); a later media query overriding a CSS value; forgetting to save a file.
+
+## Learned on 5 October
+
+- **Every `v-if` branch needs its own copy** of whatever is inside it: the Details link was only in the `abgelaufen` branch, so 3 of 5 licenses had no link (or the old button with the deleted `showDetails`).
+- **Put only what differs inside `v-if` / `v-else-if` / `v-else`:** name, date, button and link are written once; the three branches are just the status `<span>`s. The branches must be direct siblings, so no wrapper `<div>` is needed.
+- **`computed` from props:** `const status = computed(() => getStatus(props.license))`. In `<script>` you need `props.license` (that is why `defineProps` gets assigned to `props`), in the template just `status`, without `.value`.
+
+## Theory quiz (2 October): repeat these
+
+- `:key` is a Vue feature (not HTML/JS): stable identity so Vue matches old/new items when the DOM updates; the index shifts after deleting/sorting and state lands on the wrong item.
+- `onMounted` is not lazy: it runs once after the component's DOM is in the page (DOM access, start loading data); cleanup in `onUnmounted`.
+- Props are read-only because of one-way data flow: parent owns the data, child emits, parent changes it ("props down, events up").
+- `RouterLink` renders an `<a>` but navigates without a page reload, so app state is kept; a plain `<a href>` reloads the whole app.
+- Next quiz: round 3 (Pinia, SPA and general questions).
 
 ## Project setup for the license app (in this project)
 
@@ -98,7 +113,7 @@ Today: Vue Router. The rest moves to Week 3 (5-11 October).
 - [ ] **Vue Router:** login page, license overview, detail page (`/licenses/:id`, read with `useRoute().params.id`), admin area
   - [x] `/licenses` (`LicensesView.vue`) and `/login` (`LoginView.vue`), links by name in `App.vue`, `App.vue` cleaned up (2 October)
   - [x] Detail page `/licenses/:id` (`LicenseDetailView.vue`): `useRoute().params.id`, `find` + `Number(...)`, `v-if` / `v-else` for "not found" (2 October)
-  - [ ] **Next:** in `License.vue`, replace the "Details" button with a `RouterLink` to the detail route (`name` + `params`), then remove `showDetails` and the `v-show` part
+  - [x] In `License.vue`, replace the "Details" button with a `RouterLink` to the detail route (`name` + `params`), then remove `showDetails` and the `v-show` part (5 October)
   - [ ] Think about: what happens when you click "Entziehen" on the detail page? (nobody listens to `revoke` there → reason for the Pinia store)
   - [ ] Admin area
 - [ ] **Navigation guard:** users who are not logged in go to the login page
