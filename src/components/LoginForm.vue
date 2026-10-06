@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue'
-import { getStatus } from '@/utils/license';
 
 let email = ref("");
 let password = ref("");
