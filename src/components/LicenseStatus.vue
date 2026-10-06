@@ -2,31 +2,25 @@
 import { ref, onMounted, computed, watch } from 'vue'
 import License from './License.vue';
 import { getStatus } from '@/utils/license.js';
-//const licenses=ref([])
-const licenses = ref([]);
+import { useLicenseStore } from '../stores/licenseStore.js'
+
 const isLoading=ref(true);
 const search = ref(localStorage.getItem('search')??'');
-
+const store=useLicenseStore();
 onMounted(()=>{
     setTimeout(()=>{
-        licenses.value=[{ id: 1, name: 'Mathe 7 Digital', expiresAt: '2027-03-31' },
-  { id: 2, name: 'Deutsch Arbeitsheft', expiresAt: '2026-10-15' },
-  { id: 3, name: 'Englisch Vokabeltrainer', expiresAt: '2026-06-30' },
-  { id: 4, name: 'Biologie Interaktiv', expiresAt: '2026-10-20' },
-  { id: 5, name: 'Geschichte Atlas', expiresAt: '2025-12-31' }];
-  isLoading.value=false;
+        isLoading.value=false;
     }, 1000)  
 });
+const revokeLicense=store.revokeLicense;
+
 watch(search, (newValue)=>{
     localStorage.setItem('search', newValue);
 })
 const statusFilter = ref('alle');
-function revokeLicense(id){
-    licenses.value = licenses.value.filter(l=> l.id !==id)
-}
 
 const filteredLicenses= computed(() => {
-    return licenses.value.filter(license => license.name.toLowerCase().includes(search.value.toLowerCase()));
+    return store.licenses.filter(license => license.name.toLowerCase().includes(search.value.toLowerCase()));
 })
 const filteredByStatus= computed(() => {
    if(statusFilter.value!=='alle'){
@@ -43,7 +37,7 @@ const filteredByStatus= computed(() => {
 <template>
     <div class="licenseStatus">
         <p v-if="isLoading">Lade Lizenzen</p>
-        <p v-else-if="licenses.length ===0">Keine Lizenzen vorhanden</p>
+        <p v-else-if="store.licenses.length ===0">Keine Lizenzen vorhanden</p>
         <div v-else>
            <input v-model="search" placeholder="Nach einer Lizenz suchen">
            <select v-model="statusFilter">
