@@ -7,7 +7,7 @@ export const useLicenseStore = defineStore('license', () => {
   { id: 3, name: 'Englisch Vokabeltrainer', expiresAt: '2026-06-30' },
   { id: 4, name: 'Biologie Interaktiv', expiresAt: '2026-10-20' },
   { id: 5, name: 'Geschichte Atlas', expiresAt: '2025-12-31' }]);
-  function revokeLicense(id){licenses.value = licenses.value.filter(l=> l.id !==id)};
+  const revokeLicense=(id)=>{licenses.value = licenses.value.filter(l=> l.id !==id)};
 
   return { licenses, revokeLicense }
 })
