@@ -1,28 +1,31 @@
 <script setup>
-import { ref } from 'vue'
+import { ref } from 'vue';
+import { useSessionStore } from '@/stores/LoginStore';
 
-let email = ref("");
-let password = ref("");
-let role=ref("")
+const email = ref("");
+const password = ref("");
+const role=ref("")
 const ROLES=Object.freeze(["Schüler", "Lehrkraft", "Admin"]);
-let users=ref([]);
+const sessionStore = useSessionStore();
 
 function resolveLogin(){
-    let newUser= {"email": email.value, "password": password.value, "role": role.value};
-    users.value.push(newUser);
-    console.log(newUser);
+   sessionStore.login(email.value, role.value)
+    email.value="";
+    password.value="";
+    role.value="";
 }
 </script>
 
 <template>
-    <form class="login" @submit.prevent="resolveLogin">
-        <input type="email" v-model="email" placeholder="Your email">
-        <input type="password" v-model="password" placeholder="Your password">
+    <form v-if="!sessionStore.session" class="login" @submit.prevent="resolveLogin">
+        <input type="email" autocomplete="username" v-model="email" placeholder="Your email">
+        <input type="password" autocomplete="current-password" v-model="password" placeholder="Your password">
         <select v-model="role">
             <option v-for="role in ROLES" :key="role" :value="role">{{ role }}</option>
         </select>
     <button :disabled="!email ||!password || !role">Login</button>
     </form>
+    <button v-else @click="sessionStore.logout">Logout</button>
 </template>
 
 <style scoped>
