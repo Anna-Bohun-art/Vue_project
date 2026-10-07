@@ -16,5 +16,5 @@ const  revokeLicenseAndNavigate=(id)=>{
 <template>
     <h1>Detail</h1>
     <License v-if="license" :license="license" @revoke="revokeLicenseAndNavigate"/>
-    <p v-else>Lizensz nicht gefunden</p>
+    <p v-else>Lizenz nicht gefunden</p>
 </template>
