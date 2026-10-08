@@ -1,18 +1,24 @@
 <script setup>
 import { ref } from 'vue';
 import { useSessionStore } from '@/stores/LoginStore';
+import { useRouter } from 'vue-router';
 
 const email = ref("");
 const password = ref("");
-const role=ref("")
+const role=ref("");
+const router = useRouter();
 const ROLES=Object.freeze(["Schüler", "Lehrkraft", "Admin"]);
 const sessionStore = useSessionStore();
-
 function resolveLogin(){
    sessionStore.login(email.value, role.value)
+   router.push({name: "LicensesView"});
     email.value="";
     password.value="";
     role.value="";
+}
+function resolveLogout(){
+    sessionStore.logout();
+    router.push({name: "LoginView"});
 }
 </script>
 
@@ -25,7 +31,7 @@ function resolveLogin(){
         </select>
     <button :disabled="!email ||!password || !role">Login</button>
     </form>
-    <button v-else @click="sessionStore.logout">Logout</button>
+    <button v-else @click="resolveLogout">Logout</button>
 </template>
 
 <style scoped>

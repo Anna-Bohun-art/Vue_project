@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import { useSessionStore } from '@/stores/LoginStore.js';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,6 +34,13 @@ const router = createRouter({
       component: () => import('../views/LicenseDetailView.vue'),
     },
   ],
+})
+
+router.beforeEach((to)=>{
+  const sessionStore = useSessionStore();
+  if (!sessionStore.session && to.name!=='LoginView'){
+    return ({name:"LoginView"});
+  }
 })
 
 export default router
