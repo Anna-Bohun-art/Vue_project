@@ -1,6 +1,8 @@
 <script setup>
 import { ref } from 'vue'
 import MyInput from '@/components/MyInput.vue'
+import CounterOptions from '@/components/CounterOptions.vue'
+import Counter from '@/components/Counter.vue'
 
 const name = ref('');
 </script>
@@ -10,6 +12,8 @@ const name = ref('');
     <h1>This is an about page</h1>
     <MyInput v-model="name" />
     <p>Typed: {{ name }}</p>
+    <Counter />
+    <CounterOptions />
   </div>
 </template>
 
