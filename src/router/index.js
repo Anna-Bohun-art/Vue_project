@@ -33,6 +33,11 @@ const router = createRouter({
       name: 'LicenseDetailView',
       component: () => import('../views/LicenseDetailView.vue'),
     },
+    {
+      path: '/about',
+      name: 'About',
+      component: () => import('../views/AboutView.vue'),
+    },
   ],
 })
 
