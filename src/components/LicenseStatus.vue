@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue'
-import License from './License.vue';
 import { getStatus } from '@/utils/license.js';
 import { useLicenseStore } from '../stores/licenseStore.js'
+import License from './License.vue';
 
 const isLoading=ref(true);
 const search = ref(localStorage.getItem('search')??'');
@@ -46,7 +46,7 @@ const filteredByStatus= computed(() => {
                 <option value="laeuftbald">Läuft bald ab</option>
                 <option value="abgelaufen">Abgelaufen</option>
             </select>
-           <License  v-for="license in filteredByStatus" :key="license.id" :license="license" @revoke="revokeLicense"/>
+           <License v-for="license in filteredByStatus" :key="license.id" :license="license" @revoke="revokeLicense"/>
         </div>   
     </div>
 </template>
