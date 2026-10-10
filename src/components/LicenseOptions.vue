@@ -2,18 +2,19 @@
     import { getStatus } from '@/utils/license';
 
     export default { 
+        name: 'License',
         props: { license: { type: Object, required: true } },
+                emits:
+            ['revoke'],
         computed:{
             status(){
                 return getStatus(this.license);
             }
         },
-        emits:
-            ['revoke']
     }
 </script>
 <template>
-     <div >
+     <div>
         <p>{{ license.name }} </p>
         <p>{{ license.expiresAt }} </p>
         <span v-if="status==='abgelaufen'" class="abgelaufen">Abgelaufen</span>
