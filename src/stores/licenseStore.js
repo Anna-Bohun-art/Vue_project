@@ -1,5 +1,6 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import { getStatus } from '@/utils/license';
 
 export const useLicenseStore = defineStore('license', () => {
   const licenses = ref([{ id: 1, name: 'Mathe 7 Digital', expiresAt: '2027-03-31' },
@@ -8,6 +9,7 @@ export const useLicenseStore = defineStore('license', () => {
   { id: 4, name: 'Biologie Interaktiv', expiresAt: '2026-10-20' },
   { id: 5, name: 'Geschichte Atlas', expiresAt: '2025-12-31' }]);
   const revokeLicense=(id)=>{licenses.value = licenses.value.filter(l=> l.id !==id)};
-
-  return { licenses, revokeLicense }
+  const expiredCount= computed(()=> licenses.value.filter((l)=>getStatus(l)==="abgelaufen").length);
+  const licensesCount=computed(()=> licenses.value.length)
+  return { licenses, revokeLicense, expiredCount, licensesCount }
 })
