@@ -9,8 +9,9 @@ const search = ref(localStorage.getItem('search')??'');
 const store=useLicenseStore();
 onMounted(()=>{
     setTimeout(()=>{
+        store.getData();
         isLoading.value=false;
-    }, 1000)  
+    }, 1000) 
 });
 const revokeLicense=store.revokeLicense;
 

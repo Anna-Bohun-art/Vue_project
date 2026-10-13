@@ -2,14 +2,24 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { getStatus } from '@/utils/license';
 
-export const useLicenseStore = defineStore('license', () => {
-  const licenses = ref([{ id: 1, name: 'Mathe 7 Digital', expiresAt: '2027-03-31' },
-  { id: 2, name: 'Deutsch Arbeitsheft', expiresAt: '2026-10-15' },
-  { id: 3, name: 'Englisch Vokabeltrainer', expiresAt: '2026-06-30' },
-  { id: 4, name: 'Biologie Interaktiv', expiresAt: '2026-10-20' },
-  { id: 5, name: 'Geschichte Atlas', expiresAt: '2025-12-31' }]);
+export const useLicenseStore = defineStore('licenses', ()=> {
+  const licenses = ref([]);
   const revokeLicense=(id)=>{licenses.value = licenses.value.filter(l=> l.id !==id)};
   const expiredCount= computed(()=> licenses.value.filter((l)=>getStatus(l)==="abgelaufen").length);
   const licensesCount=computed(()=> licenses.value.length)
-  return { licenses, revokeLicense, expiredCount, licensesCount }
-})
+   const getData=async()=>{
+      try{
+          const response= await fetch(' http://localhost:3000/licenses');
+          if(!response.ok){
+            throw new Error(`HTTP error! Status: ${response.status}`)
+          }
+          licenses.value=await response.json();
+          console.log(licenses.value);
+      }
+      catch(error){
+          console.error('Error', error);
+      }
+   }
+    return { licenses, revokeLicense, expiredCount, licensesCount, getData }
+  })
+
