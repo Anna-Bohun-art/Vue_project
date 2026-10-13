@@ -8,8 +8,8 @@ const route =  useRoute();
 const router = useRouter();
 const store = useLicenseStore();
 const license =computed(()=>store.licenses.find(l=>l.id===Number(route.params.id))); 
-const  revokeLicenseAndNavigate=(id)=>{
-    store.revokeLicense(id);
+const revokeLicenseAndNavigate=async (id)=>{
+    await store.revokeLicense(id);
     router.push({name: "LicensesView"})
 }
 </script>
