@@ -1,32 +1,67 @@
+import { createStore } from 'vuex'
+import { getStatus } from '@/utils/license'
 
-import { createStore } from 'vuex';
-import { getStatus } from '@/utils/license';
-
-export const vuexStore= createStore({
-    state(){
-       return {licenses:
-        [{ id: 1, name: 'Mathe 7 Digital', expiresAt: '2027-03-31' },
-          { id: 2, name: 'Deutsch Arbeitsheft', expiresAt: '2026-10-15' },
-          { id: 3, name: 'Englisch Vokabeltrainer', expiresAt: '2026-06-30' },
-          { id: 4, name: 'Biologie Interaktiv', expiresAt: '2026-10-20' },
-          { id: 5, name: 'Geschichte Atlas', expiresAt: '2025-12-31' }]
-       }
-    },
-    getters:{
-        licensesCount(state){
-            return state.licenses.length;
-        },
-        expiredCount(state){
-            return  state.licenses.filter((l)=>getStatus(l)==="abgelaufen").length;
-        }
-    },
-    mutations:{
-        REVOKE_LICENSE(state, id){
-            state.licenses = state.licenses.filter(l=> l.id !==id)}
-    },
-    actions:{
-        revokeLicense({ commit }, id){
-            commit('REVOKE_LICENSE', id)}
+export const vuexStore = createStore({
+  state() {
+    return {
+      licenses: [],
+      isLoading: false,
+      error: null,
     }
-});
-
+  },
+  getters: {
+    licensesCount(state) {
+      return state.licenses.length
+    },
+    expiredCount(state) {
+      return state.licenses.filter((l) => getStatus(l) === 'abgelaufen').length
+    },
+  },
+  mutations: {
+    IS_LOADING(state) {
+      state.isLoading = !state.isLoading
+    },
+    LICENSES_MUTATION(state, licenses) {
+      state.licenses = licenses
+    },
+    SET_ERROR(state, message) {
+      if (message) {
+        state.error = message
+      } else {
+        state.error = null
+      }
+    },
+  },
+  actions: {
+    async revokeLicense({ commit, dispatch }, id) {
+      try {
+        const response = await fetch(`http://localhost:3000/licenses/${id}`, { method: 'DELETE' })
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`)
+        }
+        await dispatch('fetchLicenses')
+        commit('SET_ERROR')
+      } catch (error) {
+        commit('SET_ERROR', error.message)
+        console.log(`Error: ${error.message}`)
+      }
+    },
+    async fetchLicenses({ commit }) {
+      commit('IS_LOADING')
+      try {
+        const response = await fetch('http://localhost:3000/licenses')
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`)
+        }
+        const licenses = await response.json()
+        commit('LICENSES_MUTATION', licenses)
+        commit('SET_ERROR')
+      } catch (error) {
+        commit('SET_ERROR', error.message)
+        console.log(`Error: ${error.message}`)
+      } finally {
+        commit('IS_LOADING')
+      }
+    },
+  },
+})
