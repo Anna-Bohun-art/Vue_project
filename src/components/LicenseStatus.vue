@@ -1,71 +1,67 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue'
-import { getStatus } from '@/utils/license.js';
+import { getStatus } from '@/utils/license.js'
 import { useLicenseStore } from '../stores/licenseStore.js'
-import LicenseOptions from './LicenseOptions.vue';
+import LicenseOptions from './LicenseOptions.vue'
 
-const isLoading=ref(true);
-const search = ref(localStorage.getItem('search')??'');
-const store=useLicenseStore();
-onMounted(()=>{
-    setTimeout(()=>{
-        store.getData().then(()=>isLoading.value=false);
-        //  try{
-        // response= await store.getData();
-        //if(!response.ok){}
-        //isLoading.value=false);
-        //}
-        // catch(error){throw new Error(...)}
-    }, 1000) 
-});
-const revokeLicense=store.revokeLicense;
-
-watch(search, (newValue)=>{
-    localStorage.setItem('search', newValue);
+const store = useLicenseStore()
+const search = ref(localStorage.getItem('search') ?? '')
+onMounted(() => {
+  store.getData()
 })
-const statusFilter = ref('alle');
+const revokeLicense = store.revokeLicense
 
-const filteredLicenses= computed(() => {
-    return store.licenses.filter(license => license.name.toLowerCase().includes(search.value.toLowerCase()));
+watch(search, (newValue) => {
+  localStorage.setItem('search', newValue)
 })
-const filteredByStatus= computed(() => {
-   if(statusFilter.value!=='alle'){
-    return filteredLicenses.value.filter(license => statusFilter.value===getStatus(license));
-   }
-   else{
-    return filteredLicenses.value;
-   }
-    
-})
+const statusFilter = ref('alle')
 
+const filteredLicenses = computed(() => {
+  return store.licenses.filter((license) =>
+    license.name.toLowerCase().includes(search.value.toLowerCase()),
+  )
+})
+const filteredByStatus = computed(() => {
+  if (statusFilter.value !== 'alle') {
+    return filteredLicenses.value.filter((license) => statusFilter.value === getStatus(license))
+  } else {
+    return filteredLicenses.value
+  }
+})
 </script>
 
 <template>
-    <div class="licenseStatus">
-        <p v-if="isLoading">Lade Lizenzen</p>
-        <p v-else-if="store.licenses.length ===0">Keine Lizenzen vorhanden</p>
-        <div v-else>
-           <input v-model="search" placeholder="Nach einer Lizenz suchen">
-           <select v-model="statusFilter">
-                <option value="alle">Alle</option>
-                <option value="aktiv">Aktiv</option>
-                <option value="laeuftbald">Läuft bald ab</option>
-                <option value="abgelaufen">Abgelaufen</option>
-            </select>
-           <LicenseOptions v-for="license in filteredByStatus" :key="license.id" :license="license" @revoke="revokeLicense"/>
-        </div>   
+  <div class="licenseStatus">
+    <p v-if="store.isLoading">Lade Lizenzen</p>
+    <p v-else-if="store.errorStatus !== null">Lizenzen konnten nicht geladen werden</p>
+    <p v-else-if="store.licenses.length === 0">Keine Lizenzen vorhanden</p>
+    <div v-else>
+      <input v-model="search" placeholder="Nach einer Lizenz suchen" />
+      <select v-model="statusFilter">
+        <option value="alle">Alle</option>
+        <option value="aktiv">Aktiv</option>
+        <option value="laeuftbald">Läuft bald ab</option>
+        <option value="abgelaufen">Abgelaufen</option>
+      </select>
+      <LicenseOptions
+        v-for="license in filteredByStatus"
+        :key="license.id"
+        :license="license"
+        @revoke="revokeLicense"
+      />
     </div>
+  </div>
 </template>
 
 <style scoped>
-.abgelaufen p{
-    color:red;
+.abgelaufen p {
+  color: red;
 }
-.aktiv p{
-    color: green;
+.aktiv p {
+  color: green;
 }
 .lauftbald p {
- color:yellow;
+  color: yellow;
 }
 @media (min-width: 1024px) {
   .greetings h1,
