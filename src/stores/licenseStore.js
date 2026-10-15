@@ -14,6 +14,7 @@ export const useLicenseStore = defineStore('licenses', () => {
       }
       await getData()
     } catch (error) {
+      errorStatus.value = error.message
       console.log(error.message)
     }
   }
